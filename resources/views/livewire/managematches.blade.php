@@ -134,13 +134,13 @@ new class extends Component {
             return;
         }
 
-        if ($slots < $playersCount) {
-            session()->flash(
-                'error',
-                "Bracket size ($slots) is smaller than participants ($playersCount). Reduce players or run qualifiers."
-            );
-            return;
-        }
+        // if ($slots < $playersCount) {
+        //     session()->flash(
+        //         'error',
+        //         "Bracket size ($slots) is smaller than participants ($playersCount). Reduce players or run qualifiers."
+        //     );
+        //     return;
+        // }
 
         // Prevent regeneration
         if (Game::where('event_id', $this->event->id)->exists()) {
