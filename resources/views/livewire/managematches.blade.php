@@ -36,7 +36,7 @@ new class extends Component {
     {
         $this->event = $eventid->load('players', 'rounds.games');
 
-        $this->players = $this->event->players ?? collect();
+        $this->players = $this->event->players()->where('is_assigned', false)->get() ?? collect();
         $this->rounds = $this->event->rounds ?? collect();
 
         // Safely fetch first round (or null)
@@ -329,6 +329,10 @@ new class extends Component {
                         'team_id' => $team1->id,
                         'player_id' => $playerId,
                     ]);
+
+                    Player::where('id', $playerId)->update([
+                        'is_assigned' => true
+                    ]);
                 }
 
 
@@ -346,7 +350,12 @@ new class extends Component {
                         'team_id' => $team2->id,
                         'player_id' => $playerId,
                     ]);
+
+                    Player::where('id', $playerId)->update([
+                        'is_assigned' => true
+                    ]);
                 }
+
 
                 // Update match
                 $matchnumber = ($match->id - $match->round->games[0]->id) + 1;
@@ -436,16 +445,38 @@ new class extends Component {
 
     public function resetplayers($id)
     {
-        $match = Game::find($id);
-        if ($match->status == 'ready') {
+        $match = Game::with(['team1.players', 'team2.players'])->find($id);
+
+        if ($match && $match->status === 'ready') {
+
+            // Free Team 1 players
+            if ($match->team1) {
+                foreach ($match->team1->players as $player) {
+                    $player->update(['is_assigned' => false]);
+                }
+
+                $match->team1->delete(); // optional: if teams are match-specific
+            }
+
+            // Free Team 2 players
+            if ($match->team2) {
+                foreach ($match->team2->players as $player) {
+                    $player->update(['is_assigned' => false]);
+                }
+
+                $match->team2->delete();
+            }
+
             $match->update([
                 'team1_id' => null,
                 'team2_id' => null,
                 'status' => 'pending'
             ]);
         }
+
         $this->getList();
     }
+
 
 
 

@@ -6,13 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Player extends Model
 {
-     protected $fillable = [
+    protected $fillable = [
         'event_id',
         'name',
         'ranking',
         'subtext',
         'phone',
         'pic',
+        'is_assigned',
+    ];
+
+    protected $casts = [
+        'is_assigned' => 'boolean',
     ];
 
     public function event()
