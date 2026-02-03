@@ -411,14 +411,14 @@
                 <div style="position: absolute; bottom: 20px; font-size: 0.9rem; opacity: 0.6;">Set 1 • Game 1</div>
             </div>
         </div>
-         <div class="court-buttons">
+         {{-- <div class="court-buttons">
             <a href="{{ route('screenview', 1) }}" class="btn btn-court">Court 1</a>
             <a href="{{ route('screenview', 2) }}" class="btn btn-court">Court 2</a>
             <a href="{{ route('screenview', 3) }}" class="btn btn-court">Court 3</a>
             <a href="{{ route('screenview', 4) }}" class="btn btn-court">Court 4</a>
             <a href="{{ route('screenview', 5) }}" class="btn btn-court">Court 5</a>
          
-        </div>
+        </div> --}}
     </section>
 
 
