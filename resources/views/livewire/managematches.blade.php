@@ -48,25 +48,37 @@ new class extends Component {
         $this->numberOfPlayers = $this->players->count();
     }
 
-    private function getBracketOptions($playersCount)
+    public function getBracketOptions()
     {
-        $options = [];
+        $playersCount = (int) $this->numberOfPlayers;
 
-        $power = 1;
-        while ($power <= $playersCount) {
-            if ($power >= 2) {
-                $options[] = $power;
-            }
-            $power *= 2;
+        // Doubles → teams
+        if ($this->isDoubles) {
+            $playersCount = intdiv($playersCount, 2);
         }
 
-        // Also allow next higher bracket (byes)
-        if (!in_array($power, $options)) {
-            $options[] = $power;
+        if ($playersCount < 2) {
+            return [];
+        }
+
+        $lower = pow(2, floor(log($playersCount, 2)));
+        $upper = pow(2, ceil(log($playersCount, 2)));
+
+        $options = [];
+
+        // Previous nearest power (only if it fits)
+        if ($lower >= 2 && $lower <= $playersCount) {
+            $options[] = (int) $lower;
+        }
+
+        // Next nearest power (avoid duplicates)
+        if (!in_array((int) $upper, $options)) {
+            $options[] = (int) $upper;
         }
 
         return $options;
     }
+
 
 
     public function getList()
@@ -534,10 +546,17 @@ new class extends Component {
             </flux:radio.group>
 
             <flux:select wire:model="bracketSize" class="form-select">
-                <flux:select.option value="">Select bracket size</flux:select.option>
-                <flux:select.option value="64">64 (Top 64 players)</flux:select.option>
-                <flux:select.option value="128">128 (With byes)</flux:select.option>
+                <flux:select.option value="">Select bracket</flux:select.option>
+
+                @foreach($this->getBracketOptions() as $size)
+                    <flux:select.option value="{{ $size }}">
+                        {{ $size }}
+                        {{ $size < $numberOfPlayers ? '(cutoff / qualifiers)' : '' }}
+                        {{ $size > $numberOfPlayers ? '(with byes)' : '' }}
+                    </flux:select.option>
+                @endforeach
             </flux:select>
+
 
 
 
