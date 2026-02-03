@@ -552,7 +552,7 @@ new class extends Component {
                 <flux:radio value="1" label="Double" />
             </flux:radio.group>
 
-            <flux:select wire:model="bracketSize" class="form-select">
+            <flux:select wire:model="bracketSize" label="Choose Number of Teams" class="form-select">
                 <flux:select.option value="">Select bracket</flux:select.option>
 
                 @foreach($this->getBracketOptions() as $size)
