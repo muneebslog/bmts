@@ -101,118 +101,127 @@ new class extends Component {
         return (int) ceil(log($this->numberOfPlayers, 2));
     }
 
-
-    public function generateRoundsAndMatches()
-    {
-        $playersCount = (int) $this->numberOfPlayers;
-
-        // Singles / Doubles
-        $this->isDoubles = ($this->isDoubles == 1);
-
-        // Convert players to teams if doubles
-        if ($this->isDoubles) {
-            $playersCount = intdiv($playersCount, 2);
-        }
-
-        // Basic validation
-        if ($playersCount < 2) {
-            session()->flash('error', 'Not enough participants.');
-            return;
-        }
-
-        // Bracket size must be selected
-        if (!$this->bracketSize) {
-            session()->flash('error', 'Please select a bracket size (e.g. 64 or 128).');
-            return;
-        }
-
-        $slots = (int) $this->bracketSize;
-
-        // Prevent invalid bracket
-        if ($slots < 2 || ($slots & ($slots - 1)) !== 0) {
-            session()->flash('error', 'Bracket size must be a power of 2.');
-            return;
-        }
-
-        // if ($slots < $playersCount) {
-        //     session()->flash(
-        //         'error',
-        //         "Bracket size ($slots) is smaller than participants ($playersCount). Reduce players or run qualifiers."
-        //     );
-        //     return;
-        // }
-
-        // Prevent regeneration
-        if (Game::where('event_id', $this->event->id)->exists()) {
-            session()->flash('error', 'Matches already exist for this event.');
-            return;
-        }
-
-        // Best-of safety
-        $this->max_rounds = max(1, (int) $this->max_rounds);
-
-        DB::transaction(function () use ($slots) {
-
-            $totalRounds = (int) log($slots, 2);
-
-            // Build round names
-            $roundNames = [];
-            if ($totalRounds == 1) {
-                $roundNames = ['Final'];
-            } elseif ($totalRounds == 2) {
-                $roundNames = ['Semifinal', 'Final'];
-            } elseif ($totalRounds == 3) {
-                $roundNames = ['Quarterfinal', 'Semifinal', 'Final'];
-            } else {
-                for ($i = 1; $i <= $totalRounds - 3; $i++) {
-                    $roundNames[] = "Round $i";
-                }
-                $roundNames[] = 'Quarterfinal';
-                $roundNames[] = 'Semifinal';
-                $roundNames[] = 'Final';
-            }
-
-            // Create rounds
-            for ($i = 1; $i <= $totalRounds; $i++) {
-
-                $matchesCount = pow(2, $totalRounds - $i);
-
-                $round = Round::create([
-                    'name' => $roundNames[$i - 1] ?? "Round $i",
-                    'round_number' => $i,
-                    'matches_count' => $matchesCount,
-                    'event_id' => $this->event->id,
-                ]);
-
-                // Create matches ONLY for first round
-                if ($i === 1) {
-                    for ($j = 1; $j <= $matchesCount; $j++) {
-                        Game::create([
-                            'round_id' => $round->id,
-                            'event_id' => $this->event->id,
-                            'player1_id' => null,
-                            'player2_id' => null,
-                            'is_doubles' => $this->isDoubles,
-                            'bestof' => $this->max_rounds,
-                        ]);
-                    }
-
-                    // Sync match count (safety)
-                    $round->update([
-                        'matches_count' => Game::where('round_id', $round->id)->count()
-                    ]);
-                }
-            }
+    public function generateRoundsAndMatches(){
+    
+        DB::transaction(function () 
+        {
+            Game::where('event_id', $this->event->id)->delete();
+            Round::where('event_id', $this->event->id)->delete();
         });
 
-        Flux::modal('match-generator')->close();
-        $this->getList();
-
-        session()->flash(
-            'message',
-            "Tournament created using {$this->bracketSize}-slot bracket successfully!"
-        );
     }
+
+    // public function generateRoundsAndMatches()
+    // {
+    //     $playersCount = (int) $this->numberOfPlayers;
+
+    //     // Singles / Doubles
+    //     $this->isDoubles = ($this->isDoubles == 1);
+
+    //     // Convert players to teams if doubles
+    //     if ($this->isDoubles) {
+    //         $playersCount = intdiv($playersCount, 2);
+    //     }
+
+    //     // Basic validation
+    //     if ($playersCount < 2) {
+    //         session()->flash('error', 'Not enough participants.');
+    //         return;
+    //     }
+
+    //     // Bracket size must be selected
+    //     if (!$this->bracketSize) {
+    //         session()->flash('error', 'Please select a bracket size (e.g. 64 or 128).');
+    //         return;
+    //     }
+
+    //     $slots = (int) $this->bracketSize;
+
+    //     // Prevent invalid bracket
+    //     if ($slots < 2 || ($slots & ($slots - 1)) !== 0) {
+    //         session()->flash('error', 'Bracket size must be a power of 2.');
+    //         return;
+    //     }
+
+    //     // if ($slots < $playersCount) {
+    //     //     session()->flash(
+    //     //         'error',
+    //     //         "Bracket size ($slots) is smaller than participants ($playersCount). Reduce players or run qualifiers."
+    //     //     );
+    //     //     return;
+    //     // }
+
+    //     // Prevent regeneration
+    //     if (Game::where('event_id', $this->event->id)->exists()) {
+    //         session()->flash('error', 'Matches already exist for this event.');
+    //         return;
+    //     }
+
+    //     // Best-of safety
+    //     $this->max_rounds = max(1, (int) $this->max_rounds);
+
+    //     DB::transaction(function () use ($slots) {
+
+    //         $totalRounds = (int) log($slots, 2);
+
+    //         // Build round names
+    //         $roundNames = [];
+    //         if ($totalRounds == 1) {
+    //             $roundNames = ['Final'];
+    //         } elseif ($totalRounds == 2) {
+    //             $roundNames = ['Semifinal', 'Final'];
+    //         } elseif ($totalRounds == 3) {
+    //             $roundNames = ['Quarterfinal', 'Semifinal', 'Final'];
+    //         } else {
+    //             for ($i = 1; $i <= $totalRounds - 3; $i++) {
+    //                 $roundNames[] = "Round $i";
+    //             }
+    //             $roundNames[] = 'Quarterfinal';
+    //             $roundNames[] = 'Semifinal';
+    //             $roundNames[] = 'Final';
+    //         }
+
+    //         // Create rounds
+    //         for ($i = 1; $i <= $totalRounds; $i++) {
+
+    //             $matchesCount = pow(2, $totalRounds - $i);
+
+    //             $round = Round::create([
+    //                 'name' => $roundNames[$i - 1] ?? "Round $i",
+    //                 'round_number' => $i,
+    //                 'matches_count' => $matchesCount,
+    //                 'event_id' => $this->event->id,
+    //             ]);
+
+    //             // Create matches ONLY for first round
+    //             if ($i === 1) {
+    //                 for ($j = 1; $j <= $matchesCount; $j++) {
+    //                     Game::create([
+    //                         'round_id' => $round->id,
+    //                         'event_id' => $this->event->id,
+    //                         'player1_id' => null,
+    //                         'player2_id' => null,
+    //                         'is_doubles' => $this->isDoubles,
+    //                         'bestof' => $this->max_rounds,
+    //                     ]);
+    //                 }
+
+    //                 // Sync match count (safety)
+    //                 $round->update([
+    //                     'matches_count' => Game::where('round_id', $round->id)->count()
+    //                 ]);
+    //             }
+    //         }
+    //     });
+
+    //     Flux::modal('match-generator')->close();
+    //     $this->getList();
+
+    //     session()->flash(
+    //         'message',
+    //         "Tournament created using {$this->bracketSize}-slot bracket successfully!"
+    //     );
+    // }
 
 
 
