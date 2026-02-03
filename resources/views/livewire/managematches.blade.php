@@ -624,7 +624,7 @@ new class extends Component {
 
 
     <div class=" grid grid-cols-2 gap-5 sm:grid-cols-3">
-        @forelse ($matches as $match)
+        @forelse ($matches as $i => $match)
             @if ($match->status == 'completed')
                 <!-- Match Card Enhanced -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 pb-3 border-l-4 border-green-500">
@@ -749,7 +749,7 @@ new class extends Component {
                     <div class="text-sm text-gray-500 flex justify-between dark:text-gray-400">
                         <span
                             class="text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                            {{ $match->id }}
+                            {{ $i }} {{ $match->id }}
                         </span>
                         <p>📍 Court #{{ $match->court_number ?? 'N/A' }}</p>
                     </div>
