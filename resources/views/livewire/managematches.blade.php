@@ -48,6 +48,13 @@ new class extends Component {
         $this->numberOfPlayers = $this->players->count();
     }
 
+    public function updatedIsDoubles()
+    {
+        $options = $this->getBracketOptions();
+        $this->bracketSize = end($options) ?: null;
+    }
+
+
     public function getBracketOptions()
     {
         $playersCount = (int) $this->numberOfPlayers;
@@ -540,7 +547,7 @@ new class extends Component {
                 {{-- Total Matches in first round: {{ (int) ($numberOfPlayers / 2) }} --}}
             </h3>
             <flux:input label="Best of" wire:model="max_rounds" type="number" placeholder="Max rounds per match" />
-            <flux:radio.group wire:model="isDoubles" label="Teams Type">
+            <flux:radio.group wire:model.live="isDoubles" label="Teams Type">
                 <flux:radio value="0" checked label="Single" />
                 <flux:radio value="1" label="Double" />
             </flux:radio.group>
