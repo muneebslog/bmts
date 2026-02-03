@@ -549,7 +549,9 @@ new
 
                             <span id="team2Name">
                                 <span id="team2Name">
+                                    {{ $match->team2->players->pluck('name')->join(' & ') }} 
                                     {{ $match->team2->players->pluck('name')->join(' & ') }}
+
                                 </span>
 
                             </span>
