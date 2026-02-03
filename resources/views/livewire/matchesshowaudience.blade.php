@@ -418,7 +418,7 @@ $this->matches = $round?->games;
                             <div class="match-players">
                                 <div class="player-row">
                                     <span class="player-name">
-                                        {{ $match->team1->name }}
+                                        {{ $match->team1?->name }}
                                         <span class="winner-crown">{{ $match->winner_team_id == $match->team1_id ? '👑' : '' }}</span>
                                     </span>
                                     <div class="player-score">
@@ -430,7 +430,7 @@ $this->matches = $round?->games;
                                 <div class="vs-separator">vs</div>
                                 <div class="player-row">
                                     <span class="player-name">
-                                        {{ $match->team2->name }}
+                                        {{ $match->team2?->name }}
                                         <span class="winner-crown">{{ $match->winner_team_id == $match->team2_id ? '👑' : '' }}</span>
                                     </span>
                                     <div class="player-score">
