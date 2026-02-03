@@ -682,7 +682,7 @@ new class extends Component {
                     <div class="text-sm text-gray-500 flex justify-between dark:text-gray-400">
                         <span
                             class="text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                           {{ $i }} - {{ $match->id }}
+                           {{ $i+1 }} - {{ $match->id }}
                         </span>
                         <p>📍 {{$match->round->name . '-' . $match->name ?? 'N/A' }}</p>
                     </div>
@@ -749,7 +749,7 @@ new class extends Component {
                     <div class="text-sm text-gray-500 flex justify-between dark:text-gray-400">
                         <span
                             class="text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                            {{ $i }} - {{ $match->id }}
+                            {{ $i+1 }} - {{ $match->id }}
                         </span>
                         <p>📍 Court #{{ $match->court_number ?? 'N/A' }}</p>
                     </div>
@@ -831,7 +831,7 @@ new class extends Component {
 
                         <span
                             class="text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                           {{ $i }} - {{ $match->id }}
+                           {{ $i+1 }} - {{ $match->id }}
 
                         </span>
                     </div>
