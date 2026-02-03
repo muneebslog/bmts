@@ -253,6 +253,8 @@ new class extends Component {
             }
             $this->match_date = \Carbon\Carbon::parse($match->match_date)->format('Y-m-d');
 
+            $this->players = $this->event->players()->where('is_assigned', false)->get() ?? collect();
+
             Flux::modal('add-match')->show();
 
         }
