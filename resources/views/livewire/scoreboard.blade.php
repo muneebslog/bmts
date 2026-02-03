@@ -482,34 +482,10 @@ new
                     <div class="team-info">
                         <div class="team-name">
                             <span id="team1Name">
-@php
-    // Get first and last player objects safely
-    $firstPlayer = $match->team1->players->first();
-    $lastPlayer = $match->team1->players->last();
 
-    // Extract FIRST names safely
-    $firstFirstName = '';
-    $lastFirstName = '';
-
-    if ($firstPlayer && !empty($firstPlayer->name)) {
-        $parts = explode(' ', trim($firstPlayer->name));
-        $firstFirstName = $parts[0]; // FIRST NAME
-    }
-
-    if ($lastPlayer && !empty($lastPlayer->name)) {
-        $parts = explode(' ', trim($lastPlayer->name));
-        $lastFirstName = $parts[0]; // FIRST NAME
-    }
-@endphp
-
-{{-- Display --}}
-@if($firstFirstName)
-    {{ $firstFirstName }}
-@endif
-
-@if($match->team1->players->count() > 1 && $lastFirstName)
-    &nbsp;& {{ $lastFirstName }}
-@endif
+                                <span id="team1Name">
+                                    {{ $match->team1->players->pluck('name')->join(' & ') }}
+                                </span>
 
 
 
@@ -572,34 +548,10 @@ new
                         <div class="team-name">
 
                             <span id="team2Name">
-                              @php
-    // Get first and last player objects safely
-    $firstPlayer = $match->team2->players->first();
-    $lastPlayer = $match->team2->players->last();
+                                <span id="team2Name">
+                                    {{ $match->team2->players->pluck('name')->join(' & ') }}
+                                </span>
 
-    // Extract FIRST names safely
-    $firstFirstName = '';
-    $lastFirstName = '';
-
-    if ($firstPlayer && !empty($firstPlayer->name)) {
-        $parts = explode(' ', trim($firstPlayer->name));
-        $firstFirstName = $parts[0]; // FIRST NAME
-    }
-
-    if ($lastPlayer && !empty($lastPlayer->name)) {
-        $parts = explode(' ', trim($lastPlayer->name));
-        $lastFirstName = $parts[0]; // FIRST NAME
-    }
-@endphp
-
-{{-- Display --}}
-@if($firstFirstName)
-    {{ $firstFirstName }}
-@endif
-
-@if($match->team1->players->count() > 1 && $lastFirstName)
-    &nbsp;& {{ $lastFirstName }}
-@endif
                             </span>
                             </span>
 
@@ -654,20 +606,20 @@ new
     </div>
     @if($winnerData)
         <div style="
-                                                    position: fixed;
-                                                    top: 0;
-                                                    left: 0;
-                                                    width: 100vw;
-                                                    height: 100vh;
-                                                    background: rgba(0,0,0,0.9);
-                                                    color: #fff;
-                                                    display: flex;
-                                                    flex-direction: column;
-                                                    justify-content: center;
-                                                    align-items: center;
-                                                    z-index: 9999;
-                                                    text-align: center;
-                                                    animation: fadeIn 0.8s ease-in-out;">
+                                                            position: fixed;
+                                                            top: 0;
+                                                            left: 0;
+                                                            width: 100vw;
+                                                            height: 100vh;
+                                                            background: rgba(0,0,0,0.9);
+                                                            color: #fff;
+                                                            display: flex;
+                                                            flex-direction: column;
+                                                            justify-content: center;
+                                                            align-items: center;
+                                                            z-index: 9999;
+                                                            text-align: center;
+                                                            animation: fadeIn 0.8s ease-in-out;">
             <h1 style="font-size: 12vh; font-weight: 900; margin-bottom: 2vh; text-transform: uppercase;">
                 🏆 Winner 🏆
             </h1>
@@ -692,21 +644,21 @@ new
 
 
     <script>
-      setInterval(() => {
-    fetch(window.location.href)
-        .then(r => r.text())
-        .then(html => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-            const newContent = doc.querySelector('#scoreboard-container');
-            document.querySelector('#scoreboard-container').innerHTML = newContent.innerHTML;
-        });
-}, 1000);
+        setInterval(() => {
+            fetch(window.location.href)
+                .then(r => r.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, "text/html");
+                    const newContent = doc.querySelector('#scoreboard-container');
+                    document.querySelector('#scoreboard-container').innerHTML = newContent.innerHTML;
+                });
+        }, 1000);
 
     </script>
-   
 
-    
+
+
 
 
 
