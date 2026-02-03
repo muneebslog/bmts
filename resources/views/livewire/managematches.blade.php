@@ -533,11 +533,11 @@ new class extends Component {
                 <flux:radio value="1" label="Double" />
             </flux:radio.group>
 
-            <select wire:model="bracketSize" class="form-select">
-                <option value="">Select bracket size</option>
-                <option value="64">64 (Top 64 players)</option>
-                <option value="128">128 (With byes)</option>
-            </select>
+            <flux:select wire:model="bracketSize" class="form-select">
+                <flux:select.option value="">Select bracket size</flux:select.option>
+                <flux:select.option value="64">64 (Top 64 players)</flux:select.option>
+                <flux:select.option value="128">128 (With byes)</flux:select.option>
+            </flux:select>
 
 
 
