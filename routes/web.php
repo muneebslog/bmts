@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('/event/{eventid}/matches', 'managematches')->name('event.matches');
     Volt::route('/match/generate/{event}', 'matchesgenerator')->name('match.generator');
     Volt::route('/match/detail/{match}', 'matchdetails')->name('match.details');
+    Volt::route('/match/enter/detail/{match}', 'addmatchresults')->name('match.addresults');
 
 
 
