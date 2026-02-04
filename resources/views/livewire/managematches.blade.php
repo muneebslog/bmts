@@ -848,6 +848,8 @@ new class extends Component {
                             <div class=" flex justify-end items-center mt-3 ">
                                 <flux:button wire:navigate href="{{ route('match.control', $match->id) }}" class=" ">Start Match
                                 </flux:button>
+                                  <flux:button wire:navigate href="{{ route('match.addresults', $match->id) }}" class=" ">Add Results
+                                </flux:button>
                             </div>
                         @endif
                     </div>
